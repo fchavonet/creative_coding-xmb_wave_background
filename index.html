@@ -10,37 +10,60 @@
     <!-- CSS -->
     <link rel="stylesheet" href="./style.css">
 
-    <!-- Bootstrap Icons -->
+    <!-- BOOTSTRAP ICONS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Script -->
+    <!-- DAISYUI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- SCRIPT -->
     <script src="./script.js" defer></script>
 </head>
 
 <body>
     <main>
-        <!-- XMB Wave Background -->
+        <!-- TOP CONTAINER -->
+        <div class="fixed top-0 left-0 w-full h-auto px-8 py-6 flex flex-row justify-end items-center">
+            <!-- Toggle mode button -->
+            <label class="swap swap-rotate">
+                <input id="toggle-mode-btn" type="checkbox" class="theme-controller" value="black" />
+                <i class="bi bi-sun-fill swap-on"></i>
+                <i class="bi bi-moon-stars-fill swap-off"></i>
+            </label>
+        </div>
+
+        <!-- XMB WAVE BACKGROUND -->
         <canvas id="webgl-canvas"></canvas>
 
-        <!-- Toggle mode button -->
-        <button id="toggle-mode-btn">
-            <i class="bi bi-moon-stars-fill"></i>
-        </button>
+        <!-- BOTTOM CONTAINER -->
+        <div class="fixed left-0  bottom-0 w-full h-auto px-8 py-6 flex flex-row justify-between items-center">
+            <!-- GITHUB LINK -->
+            <a class="tooltip tooltip-right" data-tip="Click to visit the GitHub repository." href="https://github.com/fchavonet/creative_coding-xmb_wave_background" target="_blank">
+                <img src="https://img.shields.io/github/stars/fchavonet/creative_coding-xmb_wave_background?style=social&label=GitHub%20Stars" alt="GitHub Stars">
+            </a>
 
-        <!-- Portfolio link -->
-        <a id="portfolio-link" href="https://www.fchavonet.dev" target="_blank">www.fchavonet.dev</a>
-
-        <!-- GitHub link -->
-        <a id="github-link" href="https://github.com/fchavonet/creative_coding-xmb_wave_background" target="_blank">
-            <img src="https://img.shields.io/github/stars/fchavonet/creative_coding-xmb_wave_background?style=social&label=GitHub%20Stars" alt="GitHub Stars">
-        </a>
-
-        <!-- Responsive Warning -->
-        <div id="responsive-warning">
-            <i class="bi bi-exclamation-triangle-fill warning-icons"></i>
-            <p>This web application is not optimized for mobile.</p>
-            <p>Please visit it on a desktop computer for the best experience.</p>
+            <!-- PORTFOLIO LINK -->
+            <a class="link link-hover text-xs" href="https://www.fchavonet.dev" target="_blank">
+                www.fchavonet.dev
+            </a>
         </div>
+
+        <!-- RESPONSIVE WARNING -->
+        <dialog id="responsive-warning" class="modal backdrop-blur-xl">
+            <div class="modal-box max-w-xs flex flex-col justify-center items-center gap-4 text-center rounded-xl bg-base-300">
+                <i class="bi bi-aspect-ratio text-4xl"></i>
+
+                <p class="text-lg font-semibold -mt-2">
+                    This web application is designed for larger screens.
+                </p>
+
+                <p class="text-xs">
+                    A mobile-friendly version is coming soon...
+                </p>
+            </div>
+        </dialog>
     </main>
 </body>
 

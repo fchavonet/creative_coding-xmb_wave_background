@@ -1,15 +1,35 @@
-/*********************
-* RESPONSIVE WARNING *
-*********************/
+/******************************
+* RESPONSIVE WARNING BEHAVIOR *
+******************************/
 
 const responsiveWarning = document.getElementById("responsive-warning");
-// "true" if the site is optimized for responsive design, "false" if not.
+// Enable/disable responsive warning.
 const responsiveDesign = true;
+// Mobile width limit.
+const threshold = 768;
 
-// Show mobile warning if the user is on mobile and responsive-design is false.
-if (!responsiveDesign && window.innerWidth <= 768) {
-	responsiveWarning.classList.add("show");
+// Show or hide modal based on screen size.
+function checkResponsiveState() {
+  const small = window.innerWidth <= threshold;
+
+  if (!responsiveDesign && small) {
+    if (!responsiveWarning.open) {
+      responsiveWarning.showModal();
+      document.body.classList.add("overflow-hidden");
+    }
+  } else {
+    if (responsiveWarning.open) {
+      responsiveWarning.close();
+      document.body.classList.remove("overflow-hidden");
+    }
+  }
 }
+
+// Initial check.
+checkResponsiveState();
+
+// Real-time resize detection.
+window.addEventListener("resize", checkResponsiveState);
 
 
 /*******************************
@@ -23,7 +43,7 @@ const canvas = document.getElementById("webgl-canvas");
 const context = canvas.getContext("webgl");
 
 if (!context) {
-	console.error("WebGL not supported");
+  console.error("WebGL not supported");
 }
 
 let shaderProgram;
@@ -33,9 +53,9 @@ let lightModeUniformLocation;
 
 // Resize canvas to match window.
 function resizeCanvas() {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	context.viewport(0, 0, canvas.width, canvas.height);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  context.viewport(0, 0, canvas.width, canvas.height);
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -142,80 +162,80 @@ void main() {
 
 // Compile shader and log errors.
 function compileShader(source, type) {
-	const shader = context.createShader(type);
-	context.shaderSource(shader, source);
-	context.compileShader(shader);
+  const shader = context.createShader(type);
+  context.shaderSource(shader, source);
+  context.compileShader(shader);
 
-	if (!context.getShaderParameter(shader, context.COMPILE_STATUS)) {
-		console.error("Shader error:", context.getShaderInfoLog(shader));
-		context.deleteShader(shader);
+  if (!context.getShaderParameter(shader, context.COMPILE_STATUS)) {
+    console.error("Shader error:", context.getShaderInfoLog(shader));
+    context.deleteShader(shader);
 
-		return null;
-	}
+    return null;
+  }
 
-	return shader;
+  return shader;
 }
 
 // Setup shaders, buffers, and start render loop.
 function initializeWebGL() {
-	const vs = compileShader(vertexShaderSource, context.VERTEX_SHADER);
-	const fs = compileShader(fragmentShaderSource, context.FRAGMENT_SHADER);
+  const vs = compileShader(vertexShaderSource, context.VERTEX_SHADER);
+  const fs = compileShader(fragmentShaderSource, context.FRAGMENT_SHADER);
 
-	shaderProgram = context.createProgram();
-	context.attachShader(shaderProgram, vs);
-	context.attachShader(shaderProgram, fs);
-	context.linkProgram(shaderProgram);
+  shaderProgram = context.createProgram();
+  context.attachShader(shaderProgram, vs);
+  context.attachShader(shaderProgram, fs);
+  context.linkProgram(shaderProgram);
 
-	if (!context.getProgramParameter(shaderProgram, context.LINK_STATUS)) {
-		console.error("Link error:", context.getProgramInfoLog(shaderProgram));
-	}
+  if (!context.getProgramParameter(shaderProgram, context.LINK_STATUS)) {
+    console.error("Link error:", context.getProgramInfoLog(shaderProgram));
+  }
 
-	context.useProgram(shaderProgram);
+  context.useProgram(shaderProgram);
 
-	// Get attribute/uniform locations.
-	const posLoc = context.getAttribLocation(shaderProgram, "aVertexPosition");
+  // Get attribute/uniform locations.
+  const posLoc = context.getAttribLocation(shaderProgram, "aVertexPosition");
 
-	timeUniformLocation = context.getUniformLocation(shaderProgram, "uTime");
-	resolutionUniformLocation = context.getUniformLocation(shaderProgram, "uResolution");
-	lightModeUniformLocation = context.getUniformLocation(shaderProgram, "uLightMode");
+  timeUniformLocation = context.getUniformLocation(shaderProgram, "uTime");
+  resolutionUniformLocation = context.getUniformLocation(shaderProgram, "uResolution");
+  lightModeUniformLocation = context.getUniformLocation(shaderProgram, "uLightMode");
 
-	// Full-screen quad buffer.
-	const buffer = context.createBuffer();
-	context.bindBuffer(context.ARRAY_BUFFER, buffer);
+  // Full-screen quad buffer.
+  const buffer = context.createBuffer();
+  context.bindBuffer(context.ARRAY_BUFFER, buffer);
 
-	const verts = new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]);
+  const verts = new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]);
 
-	context.bufferData(context.ARRAY_BUFFER, verts, context.STATIC_DRAW);
-	context.enableVertexAttribArray(posLoc);
-	context.vertexAttribPointer(posLoc, 2, context.FLOAT, false, 0, 0);
+  context.bufferData(context.ARRAY_BUFFER, verts, context.STATIC_DRAW);
+  context.enableVertexAttribArray(posLoc);
+  context.vertexAttribPointer(posLoc, 2, context.FLOAT, false, 0, 0);
 
-	requestAnimationFrame(renderFrame);
+  requestAnimationFrame(renderFrame);
 }
 
 initializeWebGL();
 
 // Set clear color and mode uniform.
 function setWebGLMode(isLight) {
-	if (isLight) {
-		context.clearColor(1.0, 1.0, 1.0, 1.0);
-		context.uniform1i(lightModeUniformLocation, 1);
-	} else {
-		context.clearColor(0.0, 0.0, 0.0, 0.0);
-		context.uniform1i(lightModeUniformLocation, 0);
-	}
+  if (isLight) {
+    context.clearColor(1.0, 1.0, 1.0, 1.0);
+    context.uniform1i(lightModeUniformLocation, 1);
+  } else {
+    context.clearColor(0.0, 0.0, 0.0, 0.0);
+    context.uniform1i(lightModeUniformLocation, 0);
+  }
 }
 
 // Draw each animation frame.
 function renderFrame(timeMs) {
-	context.clear(context.COLOR_BUFFER_BIT);
+  context.clear(context.COLOR_BUFFER_BIT);
 
-	const timeSec = timeMs * 0.001;
+  const timeSec = timeMs * 0.001;
 
-	context.uniform1f(timeUniformLocation, timeSec);
-	context.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
-	context.drawArrays(context.TRIANGLE_STRIP, 0, 4);
+  context.uniform1f(timeUniformLocation, timeSec);
+  context.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+  context.drawArrays(context.TRIANGLE_STRIP, 0, 4);
 
-	requestAnimationFrame(renderFrame);
+  requestAnimationFrame(renderFrame);
 }
 
 
@@ -223,59 +243,20 @@ function renderFrame(timeMs) {
 * MODE TOGGLE BEHAVIOR *
 ***********************/
 
-// Get elements that change with the mode.
+// Get DaisyUI theme toggle.
 const toggleModeBtn = document.getElementById("toggle-mode-btn");
-const portfolioLink = document.getElementById("portfolio-link");
 
-// Function to apply mode.
-function applyMode(mode) {
-	body.classList.remove("light-mode", "dark-mode");
-	body.classList.add(mode);
-
-	if (mode === "dark-mode") {
-		// Set dark mode styles.
-		toggleModeBtn.style.color = "rgb(245, 245, 245)";
-		toggleModeBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
-
-		portfolioLink.style.color = "rgb(245, 245, 245)";
-
-		responsiveWarning.style.backgroundColor = "rgb(2, 4, 8)";
-
-		setWebGLMode(false);
-	} else {
-		// Set light mode styles.
-		toggleModeBtn.style.color = "rgb(2, 4, 8)";
-		toggleModeBtn.innerHTML = '<i class="bi bi-moon-stars-fill"></i>';
-
-		portfolioLink.style.color = "rgb(2, 4, 8)";
-
-		responsiveWarning.style.backgroundColor = "rgb(245, 245, 245)";
-
-		setWebGLMode(true);
-	}
+// Apply WebGL mode from DaisyUI checkbox state.
+function applyWebGLMode() {
+  if (toggleModeBtn.checked) {
+    setWebGLMode(false);
+  } else {
+    setWebGLMode(true);
+  }
 }
 
-// Check and apply saved mode on page load
-let savedMode = localStorage.getItem("mode");
+// Apply initial WebGL mode.
+applyWebGLMode();
 
-if (savedMode === null) {
-	savedMode = "light-mode"; // Default mode.
-}
-
-applyMode(savedMode);
-
-// Toggle mode and save preference.
-toggleModeBtn.addEventListener("click", function () {
-	let newMode;
-
-	if (body.classList.contains("light-mode")) {
-		newMode = "dark-mode";
-	} else {
-		newMode = "light-mode";
-	}
-
-	applyMode(newMode);
-
-	// Save choice.
-	localStorage.setItem("mode", newMode);
-});
+// Update WebGL mode when theme changes.
+toggleModeBtn.addEventListener("change", applyWebGLMode);
